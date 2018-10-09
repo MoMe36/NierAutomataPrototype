@@ -8,9 +8,12 @@ public class NierFight : MonoBehaviour {
 	public NierCam camera_control; 
 	public Transform [] Targets; 
 
-	public Vector3 CanonOffset; 
-	public GameObject SpellPrefab;
-	public float DestroyTime;  
+
+	public NierHitbox [] Hitboxes; 
+
+	// public Vector3 CanonOffset; 
+	// public GameObject SpellPrefab;
+	// public float DestroyTime;  
 	
 
 	[Header("Changing target parameters")]
@@ -19,6 +22,11 @@ public class NierFight : MonoBehaviour {
 
 	[HideInInspector] public Transform Target;
 	int CurrentTargetIndex = 0;  
+
+
+
+	Dictionary <string, NierHitbox> hitboxes; 
+	Dictionary <string, NierHitbox> hurtboxes;
 
 	Animator anim; 
 	Rigidbody rb; 
@@ -34,7 +42,7 @@ public class NierFight : MonoBehaviour {
 	void Update () {
 
 		
-
+		// FINIR LOGIC POUR HIT: HIT DATA (PARAMS POUR FORCE, INPUT ETC ) + TRIGGER + BOOL + STATE BEHAV  
 		UpdateTimers(); 
 
 
@@ -45,10 +53,21 @@ public class NierFight : MonoBehaviour {
 		changing_cooldown = changing_cooldown >= 0f ? changing_cooldown - Time.deltaTime : changing_cooldown; 
 	}
 
-	public void InstantiateSpell()
+	// public void InstantiateSpell()
+	// {
+	// 	GameObject p = Instantiate(SpellPrefab, transform.position + transform.rotation*CanonOffset, transform.rotation*SpellPrefab.transform.rotation) as GameObject; 
+	// 	Destroy(p, DestroyTime); 
+	// }
+
+	public void Hit()
 	{
-		GameObject p = Instantiate(SpellPrefab, transform.position + transform.rotation*CanonOffset, transform.rotation*SpellPrefab.transform.rotation) as GameObject; 
-		Destroy(p, DestroyTime); 
+		anim.SetBool("Hit", true); 
+	}
+
+	public void StartCombo()
+	{
+		anim.SetTrigger("StartCombo"); 
+		anim.SetBool("Hit", true); 
 	}
 
 	public void Fire()
@@ -92,6 +111,8 @@ public class NierFight : MonoBehaviour {
 		mothership = GetComponent<NierModular>(); 
 
 		Target = Targets[0]; 
+		Globals.FillAllBoxes(Hitboxes, out hitboxes, out hurtboxes); 
+		// hitboxes = Globals.FillHitboxes(Hitboxes); 
 	}
 
 

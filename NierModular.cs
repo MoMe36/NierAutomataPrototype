@@ -47,6 +47,14 @@ public class NierModular : MonoBehaviour {
 		if(inputs.Jump)
 			move.Jump(); 
 
+		if(inputs.Hit)
+		{
+			if(current_state == NierStates.fight)
+				fight.Hit();
+			else
+				fight.StartCombo();  
+		}
+
 
 		// if(inputs.Dodge)
 		// 	fight.Dodge(player_direction); 
@@ -106,7 +114,6 @@ public class NierModular : MonoBehaviour {
 			if(state)
 			{
 				current_state = NierStates.fight; 
-				current_sub_state = NierSubStates.idle; 
 			}
 		}
 
@@ -146,18 +153,11 @@ public class NierModular : MonoBehaviour {
 		{
 			float a = 0f; 
 		}
-		else if(info =="Hitting")
-		{
-			if(state)
-			{
-				current_sub_state = NierSubStates.fire; 
-			}
-		}
+	}
 
-		// else if(info == "Fire")
-		// {
-		// 	fight.InstantiateSpell(); 
-		// }
+	public void HitInform(string info, bool state)
+	{
+		return; 
 	}
 
 	public bool Ask(string info)
