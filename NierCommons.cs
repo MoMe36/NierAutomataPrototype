@@ -38,10 +38,12 @@ public class Globals : MonoBehaviour
 
 
 }
+[System.Serializable]
 public struct NierHitData
 {
 	public string HitboxName;
 	public float ImpulsionStrength;  
 	public Vector3 ImpulsionDirection; 
+	public float ActivationTime; 
 
 }

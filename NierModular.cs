@@ -155,8 +155,9 @@ public class NierModular : MonoBehaviour {
 		}
 	}
 
-	public void HitInform(string info, bool state)
+	public void HitInform(NierHitData data, bool state)
 	{
+		fight.Activation(data, state); 
 		return; 
 	}
 

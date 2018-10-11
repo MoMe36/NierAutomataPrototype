@@ -35,7 +35,7 @@ public class NierInputs : MonoBehaviour {
 		ChangeState = Input.GetButtonDown("YButton"); 
 		Dash = Input.GetButtonDown("BButton"); 
 		Jump = Input.GetButtonDown("AButton"); 
-		Hit = Input.GetKeyDown(KeyCode.Space); 
+		Hit = Input.GetButtonDown("XButton"); 
 
 	}
 

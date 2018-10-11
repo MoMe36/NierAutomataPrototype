@@ -70,6 +70,11 @@ public class NierFight : MonoBehaviour {
 		anim.SetBool("Hit", true); 
 	}
 
+	public void Activation(NierHitData data, bool state)
+	{
+		hitboxes[data.HitboxName].Active = state; 
+	}
+
 	public void Fire()
 	{
 		anim.SetTrigger("Spell"); 
