@@ -55,6 +55,14 @@ public class NierModular : MonoBehaviour {
 				fight.StartCombo();  
 		}
 
+		if(inputs.HeavyHit)
+		{
+			if(current_state == NierStates.fight)
+				fight.Hit(); 
+			else
+				fight.StartHeavyCombo(); 
+		}
+
 
 		// if(inputs.Dodge)
 		// 	fight.Dodge(player_direction); 
@@ -159,6 +167,11 @@ public class NierModular : MonoBehaviour {
 	{
 		fight.Activation(data, state); 
 		return; 
+	}
+
+	public void WeaponInform(string state)
+	{
+		fight.GetWeapon(state); 
 	}
 
 	public bool Ask(string info)

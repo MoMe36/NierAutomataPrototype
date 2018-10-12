@@ -49,7 +49,7 @@ public class NierCam : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void FixedUpdate () {
 
 		float ix = Input.GetAxis("VerCam"); 
 		float iy = Input.GetAxis("HorCam"); 
@@ -58,8 +58,11 @@ public class NierCam : MonoBehaviour {
 			NormalProcess(ix,iy); 
 		else
 			FightProcess(); 
+
+
+		AdaptPosition(); 
+		transform.LookAt(LookTarget); 
 	
-		
 	}
 
 	void FightProcess()
@@ -78,8 +81,7 @@ public class NierCam : MonoBehaviour {
 
 
 		LookTarget = Vector3.Lerp(LookTarget, EnnemyToLookAt.position, LookAtSpeed*Time.deltaTime); 
-		transform.LookAt(LookTarget); 
-
+		
 		if(ChangeSide)
 		{
 			ChangeSide = false; 
@@ -87,8 +89,6 @@ public class NierCam : MonoBehaviour {
 		}
 	}
 	
-
-
 	public void ChangeState()
 	{
 		CurrentState = CamStates.fight; 
@@ -105,14 +105,15 @@ public class NierCam : MonoBehaviour {
 		TargetPos = Target.position + rotated_offset; 
 		LookTarget = Vector3.Lerp(LookTarget,Target.position + LookAtOffset, LookAtSpeed*Time.deltaTime); 
 		// transform.LookAt(Target.position + LookAtOffset);
-		transform.LookAt(LookTarget); 
+		// LookTarget = Target.position + LookAtOffset; 
 
 	}
 
-	void FixedUpdate()
-	{
-		AdaptPosition(); 
-	}
+	// void FixedUpdate()
+	// {
+	// 	AdaptPosition(); 
+	// 	transform.LookAt(LookTarget); 
+	// }
 	void AdaptPosition()
 	{
 		

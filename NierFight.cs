@@ -9,6 +9,8 @@ public class NierFight : MonoBehaviour {
 	public Transform [] Targets; 
 
 
+
+	public WeaponControl weapon_control;
 	public NierHitbox [] Hitboxes; 
 
 	// public Vector3 CanonOffset; 
@@ -62,6 +64,17 @@ public class NierFight : MonoBehaviour {
 	public void Hit()
 	{
 		anim.SetBool("Hit", true); 
+	}
+
+	public void StartHeavyCombo()
+	{
+		anim.SetTrigger("StartSwordCombo"); 
+		anim.SetBool("Hit", true); 
+	}
+
+	public void GetWeapon(string state)
+	{
+		weapon_control.ChangeParent(state); 
 	}
 
 	public void StartCombo()

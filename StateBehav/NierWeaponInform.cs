@@ -2,38 +2,28 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NierHitInform : StateMachineBehaviour {
+public class NierWeaponInform : StateMachineBehaviour {
 
-	public NierHitData HitData; 
-	public bool DeactivateOnExit = true; 
-	bool ready = true; 
+	public enum WeaponState {idle, combat};
+	public WeaponState weapon_state = WeaponState.idle; 
+	public bool OnEnter = true; 
 
 	 // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
 	override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
 		
-		animator.SetBool("Hit", false); 
-		ready = true; 
+		if(OnEnter)
+			Call(animator); 
 	}
 
 	// OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
-	override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-	
-		if(ready)
-		{
-			if(stateInfo.normalizedTime >= HitData.ActivationTime)
-			{
-				Call(animator, true); 
-				ready = false; 
-			}
-		}
+	// override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
 
-	}
+	// }
 
 	// OnStateExit is called when a transition ends and the state machine finishes evaluating this state
 	override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-		
-		if(DeactivateOnExit)
-			Call(animator, false);
+		if(!OnEnter)
+			Call(animator); 
 	}
 
 	// OnStateMove is called right after Animator.OnAnimatorMove(). Code that processes and affects root motion should be implemented here
@@ -47,8 +37,9 @@ public class NierHitInform : StateMachineBehaviour {
 	// }
 
 
-	void Call(Animator animator, bool state)
+	void Call(Animator animator)
 	{
-		animator.gameObject.GetComponent<NierModular>().HitInform(HitData, state);
+		string state = weapon_state == WeaponState.idle ? "idle" : "combat"; 
+		animator.gameObject.GetComponent<NierModular>().WeaponInform(state);
 	}
 }

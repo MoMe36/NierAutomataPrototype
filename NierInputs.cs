@@ -10,6 +10,7 @@ public class NierInputs : MonoBehaviour {
 	public bool ChangeState; 
 	public bool Jump; 
 	public bool Hit; 
+	public bool HeavyHit; 
 
 	// Use this for initialization
 	void Start () {
@@ -36,6 +37,7 @@ public class NierInputs : MonoBehaviour {
 		Dash = Input.GetButtonDown("BButton"); 
 		Jump = Input.GetButtonDown("AButton"); 
 		Hit = Input.GetButtonDown("XButton"); 
+		HeavyHit = Input.GetKeyDown(KeyCode.Space); 
 
 	}
 
