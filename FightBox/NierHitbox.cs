@@ -5,13 +5,20 @@ using UnityEngine;
 
 public class NierHitbox : MonoBehaviour {
 
+	public string Name = "myhitbox"; 
+
 	public enum BoxType {hit, hurt};
 	public BoxType Type = BoxType.hit;
 	public GameObject ImpactEffect;  
-	public string Name = "myhitbox"; 
 	public bool Active = false; 
 
-	
+	[Header("Refers to")]
+	public NierModular PlayerReference; 
+	public NierEnnemyModular EnnemyReference; 
+
+
+	NierHitData current_hit_data; 
+
 	void OnTriggerEnter(Collider other)
 	{
 		if(Active)
@@ -21,7 +28,8 @@ public class NierHitbox : MonoBehaviour {
 			{
 				if(other_hb.Type == NierHitbox.BoxType.hurt)
 				{
-					other_hb.Impacted(); 
+					Vector3 normalized_direction = (other_hb.gameObject.transform.position - transform.position).normalized; 
+					other_hb.Impacted(current_hit_data, normalized_direction); 
 					CreateEffect(transform.position); 
 				}
 			}
@@ -34,9 +42,30 @@ public class NierHitbox : MonoBehaviour {
 		GameObject p = Instantiate(ImpactEffect, position, ImpactEffect.transform.rotation) as GameObject; 
 	}
 
-	public void Impacted()
+	public void Impacted(NierHitData impact_data, Vector3 direction)
 	{
+		if(PlayerReference != null)
+		{
+			PlayerReference.ImpactInform(impact_data);
+		}
+		else
+		{
+			EnnemyReference.ImpactInform(impact_data, direction);
+		}
 		return ; 
+	}
+
+	public void SetState(NierHitData data, bool state)
+	{
+		if(state)
+		{
+			current_hit_data = data; 
+			Active = true; 
+		}
+		else
+		{
+			Active = false; 
+		}
 	}
 
 

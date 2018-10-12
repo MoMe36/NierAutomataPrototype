@@ -44,6 +44,7 @@ public struct NierHitData
 	public string HitboxName;
 	public float ImpulsionStrength;  
 	public Vector3 ImpulsionDirection; 
+	public float HitForce; 
 	public float ActivationTime; 
 
 }

@@ -40,7 +40,7 @@ public class NierReset : StateMachineBehaviour {
 			animator.ResetTrigger(s); 
 		}
 
-		foreach(string s in TriggersToReset)
+		foreach(string s in BoolsToReset)
 		{
 			animator.SetBool(s, false); 
 		}

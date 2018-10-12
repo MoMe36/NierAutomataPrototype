@@ -85,7 +85,7 @@ public class NierFight : MonoBehaviour {
 
 	public void Activation(NierHitData data, bool state)
 	{
-		hitboxes[data.HitboxName].Active = state; 
+		hitboxes[data.HitboxName].SetState(data, state); 
 	}
 
 	public void Fire()
@@ -101,7 +101,6 @@ public class NierFight : MonoBehaviour {
 
 	public void ChangeState()
 	{
-		anim.SetTrigger("FightStance"); 
 		Camera.main.GetComponent<NierCam>().SetNewTarget(Target); 
 		Camera.main.GetComponent<NierCam>().ChangeState(); 
 	}

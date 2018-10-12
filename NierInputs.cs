@@ -33,11 +33,11 @@ public class NierInputs : MonoBehaviour {
 		camX = Input.GetAxis("HorCam");
 		camY = Input.GetAxis("VerCam"); 
 
-		ChangeState = Input.GetButtonDown("YButton"); 
+		ChangeState = Input.GetAxis("R2") > 0.5f; 
 		Dash = Input.GetButtonDown("BButton"); 
 		Jump = Input.GetButtonDown("AButton"); 
 		Hit = Input.GetButtonDown("XButton"); 
-		HeavyHit = Input.GetKeyDown(KeyCode.Space); 
+		HeavyHit = Input.GetButtonDown("YButton"); 
 
 	}
 

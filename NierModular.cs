@@ -22,6 +22,8 @@ public class NierModular : MonoBehaviour {
 	Animator anim; 
 
 
+	float camera_change_state_cooldown; 
+
 
 	// Use this for initialization
 	void Start () {
@@ -34,18 +36,40 @@ public class NierModular : MonoBehaviour {
 	void Update () {
 
 
+		
+
+		RelativeToMove(); 
+		RelativeToFight(); 
+		UpdateTimers(); 
+
+		
+	}
+
+	void UpdateTimers()
+	{
+		camera_change_state_cooldown = camera_change_state_cooldown <= 0f ? camera_change_state_cooldown : camera_change_state_cooldown - Time.deltaTime; 
+	}
+
+	void RelativeToMove()
+	{
 		player_direction = inputs.GetDirection(); 
 		player_cam_direction = inputs.GetCamDirection(); 
 		move.PlayerMove(player_direction); 
-
-		if(inputs.ChangeState)
-			fight.ChangeState(); 
 
 		if(inputs.Dash)
 			move.Dash(); 
 
 		if(inputs.Jump)
 			move.Jump(); 
+	}
+
+	void RelativeToFight()
+	{
+		if(inputs.ChangeState && camera_change_state_cooldown <= 0f)
+		{
+			fight.ChangeState();
+			camera_change_state_cooldown = 0.5f;  
+		}
 
 		if(inputs.Hit)
 		{
@@ -63,17 +87,7 @@ public class NierModular : MonoBehaviour {
 				fight.StartHeavyCombo(); 
 		}
 
-
-		// if(inputs.Dodge)
-		// 	fight.Dodge(player_direction); 
-		// if(inputs.Fire)
-		// 	fight.Fire(); 
-
-		if(current_state == NierStates.fight)
-		{
-			fight.ChangeTarget(player_cam_direction.x); 
-		}
-		
+		fight.ChangeTarget(player_cam_direction.x); 
 	}
 
 	public bool IsJumping()
@@ -172,6 +186,11 @@ public class NierModular : MonoBehaviour {
 	public void WeaponInform(string state)
 	{
 		fight.GetWeapon(state); 
+	}
+
+	public void ImpactInform(NierHitData data)
+	{
+		return; 
 	}
 
 	public bool Ask(string info)

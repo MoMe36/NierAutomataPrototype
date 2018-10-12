@@ -91,7 +91,10 @@ public class NierCam : MonoBehaviour {
 	
 	public void ChangeState()
 	{
-		CurrentState = CamStates.fight; 
+		if(CurrentState == CamStates.fight)
+			CurrentState = CamStates.normal; 
+		else
+			CurrentState = CamStates.fight; 
 	}
 
 	public void SetNewTarget(Transform target)
