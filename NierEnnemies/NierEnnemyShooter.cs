@@ -6,6 +6,7 @@ public class NierEnnemyShooter : MonoBehaviour {
 
 	public Transform Target; 
 	public Transform Barrel; 
+	public float BarrelDistance = 1f; 
 	public GameObject Projectile;
 	public float DestructionTime = 1f;  
 	public float RotationSpeed = 1f; 
@@ -57,7 +58,7 @@ public class NierEnnemyShooter : MonoBehaviour {
 
 	void Shoot()
 	{
-		GameObject p = Instantiate(Projectile, Barrel.position, transform.rotation*Projectile.transform.rotation) as GameObject; 
+		GameObject p = Instantiate(Projectile, Barrel.position + transform.forward*BarrelDistance, transform.rotation) as GameObject; 
 		Destroy(p, DestructionTime); 
 	}
 		

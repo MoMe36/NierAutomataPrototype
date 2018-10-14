@@ -11,6 +11,7 @@ public class NierInputs : MonoBehaviour {
 	public bool Jump; 
 	public bool Hit; 
 	public bool HeavyHit; 
+	public bool Dodge; 
 
 	// Use this for initialization
 	void Start () {
@@ -33,11 +34,12 @@ public class NierInputs : MonoBehaviour {
 		camX = Input.GetAxis("HorCam");
 		camY = Input.GetAxis("VerCam"); 
 
-		ChangeState = Input.GetAxis("R2") > 0.5f; 
+		ChangeState = Input.GetAxis("L2") > 0.5f; 
 		Dash = Input.GetButtonDown("BButton"); 
 		Jump = Input.GetButtonDown("AButton"); 
 		Hit = Input.GetButtonDown("XButton"); 
 		HeavyHit = Input.GetButtonDown("YButton"); 
+		Dodge = Input.GetAxis("R2") > 0.5f; 
 
 	}
 

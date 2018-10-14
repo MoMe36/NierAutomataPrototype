@@ -24,6 +24,7 @@ public class NierHitbox : MonoBehaviour {
 		if(Active)
 		{
 			NierHitbox other_hb = other.GetComponent<NierHitbox>(); 
+	
 			if(other_hb != null)
 			{
 				if(other_hb.Type == NierHitbox.BoxType.hurt)
@@ -66,6 +67,12 @@ public class NierHitbox : MonoBehaviour {
 		{
 			Active = false; 
 		}
+	}
+
+	public void GetReferenced(out NierModular player_ref, out NierEnnemyModular ennemy_ref)
+	{
+		player_ref = PlayerReference; 
+		ennemy_ref = EnnemyReference; 
 	}
 
 

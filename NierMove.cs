@@ -196,6 +196,12 @@ public class NierMove : MonoBehaviour {
 			} 
 			SetDrag("min"); 
 		}
+		else if(mothership.IsFighting())
+		{
+			SetDrag("max"); 
+			Vector3 desired_direction = ComputePlayerDirection(direction); 
+			TargetRotation = transform.rotation*ComputeAngleFromForward(desired_direction);
+		}
 	}
 
 	void Move(Vector3 v)
@@ -203,10 +209,15 @@ public class NierMove : MonoBehaviour {
 		rb.AddForce(v); 
 	}
 
-
 	void SetDrag(string target)
 	{
 		rb.drag = target == "max" ? RigidbodyDrag.y : RigidbodyDrag.x; 
+	}
+
+	public void HitImpulsion(NierHitData data)
+	{
+		Vector3 impulsion_direction = transform.rotation*data.ImpulsionDirection.normalized*data.ImpulsionStrength;
+		rb.velocity += impulsion_direction; 
 	}
 
 	public void Dash()

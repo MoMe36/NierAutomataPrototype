@@ -8,8 +8,6 @@ public class NierFight : MonoBehaviour {
 	public NierCam camera_control; 
 	public Transform [] Targets; 
 
-
-
 	public WeaponControl weapon_control;
 	public NierHitbox [] Hitboxes; 
 
@@ -43,10 +41,7 @@ public class NierFight : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		
-		// FINIR LOGIC POUR HIT: HIT DATA (PARAMS POUR FORCE, INPUT ETC ) + TRIGGER + BOOL + STATE BEHAV  
 		UpdateTimers(); 
-
 
 	}
 
@@ -54,12 +49,6 @@ public class NierFight : MonoBehaviour {
 	{
 		changing_cooldown = changing_cooldown >= 0f ? changing_cooldown - Time.deltaTime : changing_cooldown; 
 	}
-
-	// public void InstantiateSpell()
-	// {
-	// 	GameObject p = Instantiate(SpellPrefab, transform.position + transform.rotation*CanonOffset, transform.rotation*SpellPrefab.transform.rotation) as GameObject; 
-	// 	Destroy(p, DestroyTime); 
-	// }
 
 	public void Hit()
 	{
@@ -93,10 +82,9 @@ public class NierFight : MonoBehaviour {
 		anim.SetTrigger("Spell"); 
 	}
 
-	public void Dodge(Vector2 player_direction)
+	public void Dodge()
 	{	
-		if(player_direction.magnitude > 0.15f)
-			anim.SetTrigger("Dodge"); 
+		anim.SetTrigger("Dodge"); 
 	}
 
 	public void ChangeState()

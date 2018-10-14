@@ -36,8 +36,18 @@ public class Globals : MonoBehaviour
 
 	}
 
+	public static void RotateTowardsFlat(Transform character_transform, Vector3 position, float rotation_speed)
+	{
+		Vector3 direction = Vector3.ProjectOnPlane(position - character_transform.position, Vector3.up); 
+		Quaternion rotation = Quaternion.FromToRotation(character_transform.forward, direction); 
+
+		character_transform.rotation = Quaternion.Lerp(character_transform.rotation, rotation*character_transform.rotation, rotation_speed*Time.deltaTime); 
+	}
+
 
 }
+
+
 [System.Serializable]
 public struct NierHitData
 {

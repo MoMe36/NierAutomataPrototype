@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class NierEnnemyModular : MonoBehaviour {
 
-	Rigidbody rb; 
 
+	public NierShortRangeEnnemy ShortRangeController; 
+	Rigidbody rb; 
 
 	// Use this for initialization
 	void Start () {
@@ -14,6 +15,33 @@ public class NierEnnemyModular : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		
+	}
+
+
+	public void Inform(string info, bool state)
+	{
+		if(info == "Walk")
+		{
+			if(state)
+			{
+				ShortRangeController.ChangeState("walk"); 
+			}
+		}
+		else if(info == "Hit")
+		{
+			if(state)
+			{
+				ShortRangeController.ChangeState("hit");
+			}	
+			ShortRangeController.ActivateHitbox(state); 
+		}
+		else if(info == "Idle")
+		{
+			if(state)
+			{
+				ShortRangeController.ChangeState("idle"); 
+			}
+		}
 	}
 
 	public void ImpactInform(NierHitData data, Vector3 direction)

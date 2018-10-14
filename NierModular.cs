@@ -115,10 +115,6 @@ public class NierModular : MonoBehaviour {
 		return current_state == NierStates.sprint; 
 	}
 
-	public bool IsHitting()
-	{
-		return current_sub_state == NierSubStates.fire; 
-	}
 
 	public void Inform(string info, bool state)
 	{
@@ -177,9 +173,21 @@ public class NierModular : MonoBehaviour {
 		}
 	}
 
+	public bool DodgeInform()
+	{
+		if(inputs.Dodge)
+			return true; 
+		else
+			return false; 
+	}
+
 	public void HitInform(NierHitData data, bool state)
 	{
 		fight.Activation(data, state); 
+		if(state)
+		{
+			move.HitImpulsion(data); 
+		}
 		return; 
 	}
 
@@ -190,7 +198,31 @@ public class NierModular : MonoBehaviour {
 
 	public void ImpactInform(NierHitData data)
 	{
-		return; 
+		bool dodge = DodgeInform(); 
+		if(dodge)
+		{
+			fight.Dodge(); 
+		}
+		else
+		{
+			return; 
+		}
+	}
+
+
+	// This function is used to shortcut the hitbox activation in the case of a projectile using particles 
+
+	public void ProjectileImpactInform()
+	{
+		bool dodge = DodgeInform(); 
+		if(dodge)
+		{
+			fight.Dodge(); 
+		}
+		else
+		{
+			return; 
+		}
 	}
 
 	public bool Ask(string info)
