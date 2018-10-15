@@ -36,6 +36,7 @@ public class NierFight : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		Initialization(); 
+		FindTargets(); 
 	}
 	
 	// Update is called once per frame
@@ -87,6 +88,11 @@ public class NierFight : MonoBehaviour {
 		anim.SetTrigger("Dodge"); 
 	}
 
+	public void Impacted()
+	{
+		anim.SetTrigger("Impact"); 
+	}
+
 	public void ChangeState()
 	{
 		Camera.main.GetComponent<NierCam>().SetNewTarget(Target); 
@@ -98,13 +104,19 @@ public class NierFight : MonoBehaviour {
 		if(Mathf.Abs(x) > 0.5f && changing_cooldown <= 0f)
 		{
 
-			CurrentTargetIndex += (int)(Mathf.Sign(x)); 
-			CurrentTargetIndex = CurrentTargetIndex < 0 ? Targets.Length - 1 : CurrentTargetIndex%Targets.Length; 
+			Targets = Globals.CleanArray(Targets); 
+			if(Targets.Length > 0)
+			{
+				
+				CurrentTargetIndex += (int)(Mathf.Sign(x)); 
+				CurrentTargetIndex = CurrentTargetIndex < 0 ? Targets.Length - 1 : CurrentTargetIndex%Targets.Length; 
 
-			Target = Targets[CurrentTargetIndex]; 
+				Target = Targets[CurrentTargetIndex]; 
 
-			camera_control.SetNewTarget(Target);
+				camera_control.SetNewTarget(Target);
 
+			}
+			
 			changing_cooldown = ChangingCooldown;  
 		}
 	}
@@ -118,6 +130,19 @@ public class NierFight : MonoBehaviour {
 		Target = Targets[0]; 
 		Globals.FillAllBoxes(Hitboxes, out hitboxes, out hurtboxes); 
 		// hitboxes = Globals.FillHitboxes(Hitboxes); 
+	}
+
+
+	void FindTargets()
+	{
+		NierShortRangeEnnemy [] ennemies = FindObjectsOfType(typeof(NierShortRangeEnnemy)) as NierShortRangeEnnemy []; 
+		Transform [] target_placeholder = new Transform [ennemies.Length];
+		for(int i = 0; i<ennemies.Length; i++)
+		{
+			target_placeholder[i] = ennemies[i].gameObject.transform; 
+		}
+
+		Targets = target_placeholder;  
 	}
 
 

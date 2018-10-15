@@ -7,7 +7,7 @@ public class NierShortRangeEnnemy : MonoBehaviour {
 
 	public Transform Target; 
 
-	public enum EnnemyState {idle, walk, hit}; 
+	public enum EnnemyState {idle, walk, hit, impact}; 
 	public EnnemyState state = EnnemyState.idle; 
 
 
@@ -23,6 +23,9 @@ public class NierShortRangeEnnemy : MonoBehaviour {
 	public NierHitbox hitbox; 
 	public float HitDistance =1f; 
 
+	[Header("Death parameters")]
+	public float LifePoints = 100f; 
+	public GameObject ExplosionEffect; 
 
 	float idle_cooldown; 
 	Rigidbody rb; 
@@ -72,10 +75,33 @@ public class NierShortRangeEnnemy : MonoBehaviour {
 		{
 			state = EnnemyState.hit; 
 		}
+		else if(state_name == "impact")
+		{
+			state = EnnemyState.impact; 
+		}
 		else
 		{
 			state = EnnemyState.idle; 
 		}
+	}
+
+	public void TakeHit(float hit_force)
+	{
+		LifePoints -= hit_force; 
+		if(LifePoints <= 0f)
+		{
+			anim.SetTrigger("Destruction");
+			EnnemyDestroy();  
+		}
+		else
+			anim.SetTrigger("Impact"); 
+	}
+
+	public void EnnemyDestroy()
+	{
+		GameObject p = Instantiate(ExplosionEffect, transform.position, ExplosionEffect.transform.rotation) as GameObject; 
+		Destroy(p, 5f); 
+		Destroy(gameObject, 1f); 
 	}
 
 	void Fight()

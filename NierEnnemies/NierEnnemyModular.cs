@@ -10,7 +10,7 @@ public class NierEnnemyModular : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		rb = GetComponent<Rigidbody>(); 
+		rb = GetComponent<Rigidbody>();
 	}
 	// Update is called once per frame
 	void Update () {
@@ -35,6 +35,13 @@ public class NierEnnemyModular : MonoBehaviour {
 			}	
 			ShortRangeController.ActivateHitbox(state); 
 		}
+		else if(info == "Impact")
+		{
+			if(state)
+			{
+				ShortRangeController.ChangeState("impact"); 
+			}
+		}
 		else if(info == "Idle")
 		{
 			if(state)
@@ -47,5 +54,6 @@ public class NierEnnemyModular : MonoBehaviour {
 	public void ImpactInform(NierHitData data, Vector3 direction)
 	{
 		rb.velocity += data.HitForce*direction; 
+		ShortRangeController.TakeHit(40); 
 	}
 }

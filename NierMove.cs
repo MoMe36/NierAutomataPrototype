@@ -202,6 +202,10 @@ public class NierMove : MonoBehaviour {
 			Vector3 desired_direction = ComputePlayerDirection(direction); 
 			TargetRotation = transform.rotation*ComputeAngleFromForward(desired_direction);
 		}
+		else if(mothership.IsImpacted())
+		{
+			SetDrag("max"); 
+		}
 	}
 
 	void Move(Vector3 v)

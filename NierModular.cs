@@ -5,7 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody), typeof(CapsuleCollider))]
 public class NierModular : MonoBehaviour {
 
-	public enum NierStates {normal, fight, dash, sprint, jump};
+	public enum NierStates {normal, fight, dash, sprint, jump, impact};
 	public enum NierSubStates {idle, fire}; 
 
 	public NierStates current_state = NierStates.normal; 
@@ -115,6 +115,11 @@ public class NierModular : MonoBehaviour {
 		return current_state == NierStates.sprint; 
 	}
 
+	public bool IsImpacted()
+	{
+		return current_state == NierStates.impact; 
+	}
+
 
 	public void Inform(string info, bool state)
 	{
@@ -167,10 +172,18 @@ public class NierModular : MonoBehaviour {
 				Debug.Log("Jump called"); 
 			}
 		}
+		else if(info == "Impact")
+		{
+			if(state)
+			{
+				current_state = NierStates.impact; 
+			}
+		}
 		else if(info == "Landed")
 		{
 			float a = 0f; 
 		}
+
 	}
 
 	public bool DodgeInform()
@@ -205,7 +218,7 @@ public class NierModular : MonoBehaviour {
 		}
 		else
 		{
-			return; 
+			fight.Impacted(); 
 		}
 	}
 
@@ -221,7 +234,7 @@ public class NierModular : MonoBehaviour {
 		}
 		else
 		{
-			return; 
+			fight.Impacted(); 
 		}
 	}
 

@@ -67,25 +67,32 @@ public class NierCam : MonoBehaviour {
 
 	void FightProcess()
 	{
-		// Reconstruct the frame based on Target-Character axis 
+		// Reconstruct the frame based on Target-Character axis
 
-		Vector3 v_x = Vector3.ProjectOnPlane((Target.position - EnnemyToLookAt.position).normalized, Vector3.up); 
-		Vector3 v_y = Quaternion.AngleAxis(90, Vector3.up)*v_x;
-		Vector3 v_z = Vector3.Cross(v_x, v_y);
-
-
-		Vector3 target_frame_vector = (Target.position - EnnemyToLookAt.position).magnitude < CloseDistance ? CloseOffset : FightOffset; 
-		frame_vector = Vector3.Lerp(frame_vector, target_frame_vector, FightPositionLerpSpeed*Time.deltaTime); 
-
-		TargetPos = Target.position + v_x*frame_vector.x + v_y*frame_vector.y + v_z*frame_vector.z; 
-
-
-		LookTarget = Vector3.Lerp(LookTarget, EnnemyToLookAt.position, LookAtSpeed*Time.deltaTime); 
-		
-		if(ChangeSide)
+		if(EnnemyToLookAt != null)
 		{
-			ChangeSide = false; 
-			// FightOffset.x *= -1f;
+			Vector3 v_x = Vector3.ProjectOnPlane((Target.position - EnnemyToLookAt.position).normalized, Vector3.up); 
+			Vector3 v_y = Quaternion.AngleAxis(90, Vector3.up)*v_x;
+			Vector3 v_z = Vector3.Cross(v_x, v_y);
+
+
+			Vector3 target_frame_vector = (Target.position - EnnemyToLookAt.position).magnitude < CloseDistance ? CloseOffset : FightOffset; 
+			frame_vector = Vector3.Lerp(frame_vector, target_frame_vector, FightPositionLerpSpeed*Time.deltaTime); 
+
+			TargetPos = Target.position + v_x*frame_vector.x + v_y*frame_vector.y + v_z*frame_vector.z; 
+
+
+			LookTarget = Vector3.Lerp(LookTarget, EnnemyToLookAt.position, LookAtSpeed*Time.deltaTime); 
+			
+			if(ChangeSide)
+			{
+				ChangeSide = false; 
+				// FightOffset.x *= -1f;
+			}
+		} 
+		else
+		{
+			ChangeState(); 
 		}
 	}
 	

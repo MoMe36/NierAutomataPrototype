@@ -45,6 +45,20 @@ public class Globals : MonoBehaviour
 	}
 
 
+
+	public static Transform [] CleanArray(Transform [] targets)
+	{
+		List<Transform> cleaned = new List<Transform>(); 
+		foreach(Transform t in targets)
+		{
+			if(t != null)
+				cleaned.Add(t); 
+		}
+
+		return cleaned.ToArray(); 
+	}
+
+
 }
 
 
