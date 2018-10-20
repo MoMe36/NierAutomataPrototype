@@ -5,7 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody), typeof(CapsuleCollider))]
 public class NierModular : MonoBehaviour {
 
-	public enum NierStates {normal, fight, dash, sprint, jump, impact};
+	public enum NierStates {normal, fight, dash, sprint, jump, impact, dodge};
 	public enum NierSubStates {idle, fire}; 
 
 	public NierStates current_state = NierStates.normal; 
@@ -54,6 +54,13 @@ public class NierModular : MonoBehaviour {
 	{
 		player_direction = inputs.GetDirection(); 
 		player_cam_direction = inputs.GetCamDirection(); 
+
+		if(Input.GetKeyDown(KeyCode.Space))
+		{
+			inputs.Dash = true;
+			player_direction = transform.right;  
+		}
+
 		move.PlayerMove(player_direction); 
 
 		if(inputs.Dash)
@@ -120,6 +127,11 @@ public class NierModular : MonoBehaviour {
 		return current_state == NierStates.impact; 
 	}
 
+	public bool IsDodging()
+	{
+		return current_state == NierStates.dodge; 
+	}
+
 
 	public void Inform(string info, bool state)
 	{
@@ -137,13 +149,17 @@ public class NierModular : MonoBehaviour {
 			if(state)
 			{
 				current_state = NierStates.fight; 
+				move.EnterFight(); 
 			}
 		}
 
 		else if(info == "Dash")
 		{
 			if(state)
+			{
 				current_state = NierStates.dash; 
+				move.EnterDash(); 
+			}
 		}
 
 		else if(info == "Sprint")
@@ -158,9 +174,12 @@ public class NierModular : MonoBehaviour {
 		{
 			if(state)
 			{
-				move.Dodge(player_direction); 
-				ComputeDashDirection(); 
-				// current_sub_state = NierSubStates.dash; 
+				fight.StopEnnemyTime(); 
+				current_state = NierStates.dodge; // Makes NierMove push the character transform
+			}
+			else
+			{
+				fight.ResetTime(); 
 			}
 		}
 		else if(info == "Jump")
@@ -168,14 +187,23 @@ public class NierModular : MonoBehaviour {
 			if(state)
 			{
 				move.JumpAction(); 
+				move.EnterJump(); 
 				current_state = NierStates.jump; 
-				Debug.Log("Jump called"); 
+			}
+		}
+		else if(info == "Drop")
+		{
+			if(state)
+			{
+				move.EnterDrop(); 
+				current_state = NierStates.jump; 
 			}
 		}
 		else if(info == "Impact")
 		{
 			if(state)
 			{
+				move.EnterImpact(); 
 				current_state = NierStates.impact; 
 			}
 		}
@@ -212,6 +240,7 @@ public class NierModular : MonoBehaviour {
 	public void ImpactInform(NierHitData data)
 	{
 		bool dodge = DodgeInform(); 
+
 		if(dodge)
 		{
 			fight.Dodge(); 

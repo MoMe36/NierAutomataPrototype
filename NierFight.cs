@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class NierFight : MonoBehaviour {
 
+	public NierTimeControl TimeManager; 
 	public NierCam camera_control; 
 	public Transform [] Targets; 
 
@@ -91,6 +92,18 @@ public class NierFight : MonoBehaviour {
 	public void Impacted()
 	{
 		anim.SetTrigger("Impact"); 
+	}
+
+	public void StopEnnemyTime()
+	{
+		float factor = TimeManager.StopTime(); 
+		anim.speed = 1f/factor; 
+	}
+
+	public void ResetTime()
+	{
+		anim.speed = 1f; 
+		TimeManager.ResetTime(); 
 	}
 
 	public void ChangeState()

@@ -45,6 +45,8 @@ public class Globals : MonoBehaviour
 	}
 
 
+	
+
 
 	public static Transform [] CleanArray(Transform [] targets)
 	{

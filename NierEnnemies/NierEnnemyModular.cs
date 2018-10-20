@@ -27,14 +27,6 @@ public class NierEnnemyModular : MonoBehaviour {
 				ShortRangeController.ChangeState("walk"); 
 			}
 		}
-		else if(info == "Hit")
-		{
-			if(state)
-			{
-				ShortRangeController.ChangeState("hit");
-			}	
-			ShortRangeController.ActivateHitbox(state); 
-		}
 		else if(info == "Impact")
 		{
 			if(state)
@@ -49,6 +41,20 @@ public class NierEnnemyModular : MonoBehaviour {
 				ShortRangeController.ChangeState("idle"); 
 			}
 		}
+	}
+
+	public void HitInform(NierHitData data, bool state)
+	{
+		if(state)
+		{
+			ShortRangeController.ChangeState("hit");
+			Vector3 v = data.ImpulsionDirection.normalized*data.ImpulsionStrength; 
+			ShortRangeController.ApplyImpulsion(v); 
+		}
+
+		ShortRangeController.ActivateHitbox(data, state); 
+
+
 	}
 
 	public void ImpactInform(NierHitData data, Vector3 direction)

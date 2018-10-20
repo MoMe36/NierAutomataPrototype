@@ -13,14 +13,16 @@ public class NierShortRangeEnnemy : MonoBehaviour {
 
 	[Header("Idle parameters")]
 	public float IdleTime = 1f; 
+	public float MaxDistance = 20f; 
 
 	[Header("Walk parameters")]
 	public float WalkSpeed = 1f; 
 	public float RotationSpeed = 1f; 
 	public float WalkDecision = 1f; 
+	public Vector2 DragValues; 
 
 	[Header("Hit parameters")]
-	public NierHitbox hitbox; 
+	public NierHitbox [] hitbox; 
 	public float HitDistance =1f; 
 
 	[Header("Death parameters")]
@@ -31,12 +33,18 @@ public class NierShortRangeEnnemy : MonoBehaviour {
 	Rigidbody rb; 
 	Animator anim; 
 
+
+	Dictionary <string, NierHitbox> hit_dict; 
+	Dictionary <string, NierHitbox> hurt_dict; 
+
 	// Use this for initialization
 	void Start () {
 			
 			rb = GetComponent<Rigidbody>(); 
 			anim = GetComponent<Animator>(); 
 			idle_cooldown = IdleTime; 
+
+			Globals.FillAllBoxes(hitbox, out hit_dict, out hurt_dict); 
 	}
 	
 	// Update is called once per frame
@@ -45,6 +53,7 @@ public class NierShortRangeEnnemy : MonoBehaviour {
 
 		if(state == EnnemyState.idle)
 		{
+			SetDrag("min"); 
 			bool ready_to_decide = Count();
 			if(ready_to_decide)
 			{
@@ -53,16 +62,25 @@ public class NierShortRangeEnnemy : MonoBehaviour {
 		}
 		else if(state == EnnemyState.walk)
 		{
+			SetDrag("max"); 
 			Move(transform.forward*WalkSpeed);
 			Globals.RotateTowardsFlat(transform, Target.position , RotationSpeed); 
-			Decide(); 
+			bool ready_to_decide = Count(); 
+			
+			if(ready_to_decide)
+				Decide(); 
+		}
+		else if(state == EnnemyState.hit)
+		{
+			SetDrag("max"); 
 		}
 		
 	}
 
-	public void ActivateHitbox(bool state)
+	public void ActivateHitbox(NierHitData data, bool state)
 	{
-		hitbox.Active = state; 
+
+		hit_dict[data.HitboxName].Active = state; 
 	}
 
 	public void ChangeState(string state_name)
@@ -97,6 +115,11 @@ public class NierShortRangeEnnemy : MonoBehaviour {
 			anim.SetTrigger("Impact"); 
 	}
 
+	public void ApplyImpulsion(Vector3 v)
+	{
+		rb.velocity += transform.rotation*v; 
+	}
+
 	public void EnnemyDestroy()
 	{
 		GameObject p = Instantiate(ExplosionEffect, transform.position, ExplosionEffect.transform.rotation) as GameObject; 
@@ -104,22 +127,37 @@ public class NierShortRangeEnnemy : MonoBehaviour {
 		Destroy(gameObject, 1f); 
 	}
 
-	void Fight()
+	void SetDrag(string drag_case)
 	{
-
+		if(drag_case == "max")
+		{
+			rb.drag = DragValues.y; 
+		}
+		else
+		{
+			rb.drag = DragValues.x; 
+		}
 	}
 
 	void Decide()
 	{
-		float current_distance = GetDirectionToTarget().magnitude; 
-		if(current_distance < HitDistance)
+		float current_distance = GetDirectionToTarget().magnitude;
+		if(current_distance > MaxDistance)
 		{
-			anim.SetTrigger("Hit");
+			anim.SetTrigger("Idle"); 
+		} 
+		else{
+			
+			if(current_distance < HitDistance)
+			{
+				anim.SetTrigger("Hit");
+			}
+			else
+			{
+				anim.SetTrigger("Walk"); 
+			}
 		}
-		else
-		{
-			anim.SetTrigger("Walk"); 
-		}
+		
 	}
 
 	bool Count()

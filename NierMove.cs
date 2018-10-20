@@ -17,7 +17,11 @@ public class NierMove : MonoBehaviour {
 	[Header("Sprint parameters")]
 	public float SprintSpeed = 1f; 
 
+	[Header("Dodge parameters")]
+	public float DodgeSpeed = 1f;
+
 	[Header("Jump parameters")]
+	public Vector3 GroundedDetectionOffset; 
 	public float AdditionalGravity = 1f; 
 	public float MinVerticalSpeedForGravity = 1f; 
 	public float AirSpeed = 1f; 
@@ -77,6 +81,10 @@ public class NierMove : MonoBehaviour {
 				up = false; 
 			}
 			ContinuousJumpControl(up);
+		}
+		else
+		{
+			CheckGrounded(); 
 		}
 	}
 
@@ -142,6 +150,20 @@ public class NierMove : MonoBehaviour {
 		}
 	}
 
+	void CheckGrounded()
+	{
+		if(!mothership.IsJumping())
+		{
+			Ray ray = new Ray(transform.position + transform.rotation*GroundedDetectionOffset, Vector3.down); 
+			RaycastHit hit; 
+
+			if(!Physics.Raycast(ray, out hit, height*1.05f))
+			{
+				Drop(); 
+			}
+		}
+	}
+
 	void TransferSpeedOnLanding()
 	{
 		rb.velocity += Vector3.ProjectOnPlane(rb.velocity, Vector3.up)*TransferSpeedOnLandingRatio; 
@@ -169,10 +191,16 @@ public class NierMove : MonoBehaviour {
 			{
 				SetDrag("min"); 
 			}
+
+
+
 		}
 		else if(mothership.IsDashing())
 		{
-			SetDrag("min"); 
+			// TargetRotation = transform.rotation; 
+			// SetDrag("min");
+			// Above is now set in EnterDash(). Called by NierModular
+
 			if(has_inputs)
 			{
 				Vector3 desired_direction = ComputePlayerDirection(direction); 
@@ -182,7 +210,7 @@ public class NierMove : MonoBehaviour {
 			else
 			{
 				Move(transform.forward*DashSpeed); 
-				AdjustAnimXY(transform.forward); 
+				AdjustAnimXY(transform.forward);
 			}
 		}
 		else if(mothership.IsJumping())
@@ -194,17 +222,22 @@ public class NierMove : MonoBehaviour {
 				Move(desired_direction*AirSpeed); 
 				TargetRotation = transform.rotation*ComputeAngleFromForward(desired_direction); 
 			} 
-			SetDrag("min"); 
 		}
 		else if(mothership.IsFighting())
 		{
-			SetDrag("max"); 
+			// Drag is set to max in the EnterFight function called by NierModular
+			
 			Vector3 desired_direction = ComputePlayerDirection(direction); 
 			TargetRotation = transform.rotation*ComputeAngleFromForward(desired_direction);
 		}
 		else if(mothership.IsImpacted())
 		{
 			SetDrag("max"); 
+		}
+		else if(mothership.IsDodging())
+		{
+			SetDrag("max"); 
+			transform.position -= transform.forward*Time.fixedDeltaTime*DodgeSpeed; 
 		}
 	}
 
@@ -216,6 +249,39 @@ public class NierMove : MonoBehaviour {
 	void SetDrag(string target)
 	{
 		rb.drag = target == "max" ? RigidbodyDrag.y : RigidbodyDrag.x; 
+	}
+
+	public void StopRun()
+	{
+		anim.SetTrigger("StopRun"); 
+	}
+
+	public void EnterFight()
+	{
+		SetDrag("max"); 
+	}
+
+	public void EnterDash()
+	{
+		TargetRotation = transform.rotation; 
+		SetDrag("min"); 
+	}
+
+	public void EnterImpact()
+	{
+		SetDrag("max"); 
+	}
+
+	public void EnterJump()
+	{
+		SetDrag("min"); 
+		continuous_jump_control = true; 
+	}
+
+	public void EnterDrop()
+	{
+		SetDrag("min"); 
+		continuous_jump_control = true; 
 	}
 
 	public void HitImpulsion(NierHitData data)
@@ -234,10 +300,14 @@ public class NierMove : MonoBehaviour {
 		anim.SetTrigger("Jump"); 
 	}
 
+	public void Drop()
+	{
+		anim.SetTrigger("Drop"); 
+	}
+
 	public void JumpAction()
 	{ 
 		rb.velocity += Vector3.up*JumpForce; 
-		continuous_jump_control = true; 
 	}
 
 	public void SetWasSprinting(bool state)
