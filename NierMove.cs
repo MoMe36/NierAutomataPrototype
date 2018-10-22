@@ -15,10 +15,13 @@ public class NierMove : MonoBehaviour {
 	public float DashSpeed = 1f; 
 
 	[Header("Sprint parameters")]
-	public float SprintSpeed = 1f; 
+	public float SprintSpeed = 1f;
+	public float MaxAngleRunStop = 120f;  
 
 	[Header("Dodge parameters")]
-	public float DodgeSpeed = 1f;
+	public float DodgeDistance = 1f;
+	public float DodgeLerpSpeed; 
+	Vector3 DodgePositionTarget; 
 
 	[Header("Jump parameters")]
 	public Vector3 GroundedDetectionOffset; 
@@ -181,18 +184,32 @@ public class NierMove : MonoBehaviour {
 		{
 			if(has_inputs)
 			{
+				if(rb.velocity.magnitude < 0.01f)
+				{
+					QuickStart(); 
+				}
 				float actual_speed = mothership.IsNormal() ? Speed : SprintSpeed; 
 				Vector3 desired_direction = ComputePlayerDirection(direction); 
 				Move(desired_direction*actual_speed); 
 				TargetRotation = transform.rotation*ComputeAngleFromForward(desired_direction); 
 				SetDrag("max"); 
+
+
+				if(mothership.IsSprinting())
+				{
+					float angle = Vector3.Angle(desired_direction, rb.velocity.normalized); 
+					if(!Globals.SmallerAngle(desired_direction, rb.velocity.normalized, MaxAngleRunStop))
+						StopRun(); 
+				}
 			} 
 			else
 			{
 				SetDrag("min"); 
+				if(mothership.IsSprinting())
+				{
+					StopRun(); 
+				}
 			}
-
-
 
 		}
 		else if(mothership.IsDashing())
@@ -206,6 +223,10 @@ public class NierMove : MonoBehaviour {
 				Vector3 desired_direction = ComputePlayerDirection(direction); 
 				Move(desired_direction*DashSpeed); 
 				AdjustAnimXY(desired_direction); 
+
+				if(!Globals.SmallerAngle(desired_direction, rb.velocity.normalized, MaxAngleRunStop))
+					StopRun(); 
+
 			}	
 			else
 			{
@@ -230,14 +251,9 @@ public class NierMove : MonoBehaviour {
 			Vector3 desired_direction = ComputePlayerDirection(direction); 
 			TargetRotation = transform.rotation*ComputeAngleFromForward(desired_direction);
 		}
-		else if(mothership.IsImpacted())
-		{
-			SetDrag("max"); 
-		}
 		else if(mothership.IsDodging())
 		{
-			SetDrag("max"); 
-			transform.position -= transform.forward*Time.fixedDeltaTime*DodgeSpeed; 
+			transform.position = Vector3.Lerp(transform.position, DodgePositionTarget, DodgeLerpSpeed*Time.fixedDeltaTime); 
 		}
 	}
 
@@ -251,9 +267,19 @@ public class NierMove : MonoBehaviour {
 		rb.drag = target == "max" ? RigidbodyDrag.y : RigidbodyDrag.x; 
 	}
 
+	public void QuickStart()
+	{
+		anim.SetTrigger("QuickStart"); 
+	}
+
 	public void StopRun()
 	{
 		anim.SetTrigger("StopRun"); 
+	}
+
+	public void EnterStop()
+	{
+		SetDrag("max"); 
 	}
 
 	public void EnterFight()
@@ -276,6 +302,12 @@ public class NierMove : MonoBehaviour {
 	{
 		SetDrag("min"); 
 		continuous_jump_control = true; 
+	}
+
+	public void EnterDodge()
+	{
+		SetDrag("max"); 
+		DodgePositionTarget = transform.position - transform.forward*DodgeDistance; 
 	}
 
 	public void EnterDrop()

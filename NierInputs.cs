@@ -12,6 +12,7 @@ public class NierInputs : MonoBehaviour {
 	public bool Hit; 
 	public bool HeavyHit; 
 	public bool Dodge; 
+	public bool Shoot; 
 
 	// Use this for initialization
 	void Start () {
@@ -40,6 +41,7 @@ public class NierInputs : MonoBehaviour {
 		Hit = Input.GetButtonDown("XButton"); 
 		HeavyHit = Input.GetButtonDown("YButton"); 
 		Dodge = Input.GetAxis("R2") > 0.5f; 
+		Shoot = Input.GetButton("R1"); 
 
 	}
 

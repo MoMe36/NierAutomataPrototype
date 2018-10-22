@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class NierFight : MonoBehaviour {
 
+	public PodFight pod; 
 	public NierTimeControl TimeManager; 
 	public NierCam camera_control; 
 	public Transform [] Targets; 
@@ -79,9 +80,9 @@ public class NierFight : MonoBehaviour {
 		hitboxes[data.HitboxName].SetState(data, state); 
 	}
 
-	public void Fire()
+	public void Shoot()
 	{
-		anim.SetTrigger("Spell"); 
+		pod.Shoot(); 
 	}
 
 	public void Dodge()

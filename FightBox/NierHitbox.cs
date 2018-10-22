@@ -7,7 +7,7 @@ public class NierHitbox : MonoBehaviour {
 
 	public string Name = "myhitbox"; 
 
-	public enum BoxType {hit, hurt};
+	public enum BoxType {hit, hurt, projectile};
 	public BoxType Type = BoxType.hit;
 	public GameObject ImpactEffect;  
 	public bool Active = false; 
@@ -20,6 +20,36 @@ public class NierHitbox : MonoBehaviour {
 	NierHitData current_hit_data; 
 
 	void OnTriggerEnter(Collider other)
+	{
+		if(Type == BoxType.hit)
+		{
+			CollisionWithHitbox(other);
+		}	
+		else if(Type == BoxType.projectile)
+		{
+			CollisionWithParticle(other); 
+		}
+
+	}
+
+	void CollisionWithParticle(Collider other)
+	{
+		NierHitbox other_hb = other.GetComponent<NierHitbox>(); 
+	
+		if(other_hb != null)
+		{
+			if(other_hb.Type == NierHitbox.BoxType.hurt)
+			{
+				Vector3 normalized_direction = (other_hb.gameObject.transform.position - transform.position).normalized; 
+				current_hit_data = GetComponent<ProjectileBasic>().HitInfo; 
+				other_hb.Impacted(current_hit_data, normalized_direction); 
+			}
+		}
+		Destroy(transform.root.gameObject); 
+		CreateEffect(transform.position); 
+	}
+
+	void CollisionWithHitbox(Collider other)
 	{
 		if(Active)
 		{
@@ -35,7 +65,6 @@ public class NierHitbox : MonoBehaviour {
 				}
 			}
 		}
-
 	}
 
 	void CreateEffect(Vector3 position)

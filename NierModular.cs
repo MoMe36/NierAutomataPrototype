@@ -5,7 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody), typeof(CapsuleCollider))]
 public class NierModular : MonoBehaviour {
 
-	public enum NierStates {normal, fight, dash, sprint, jump, impact, dodge};
+	public enum NierStates {normal, fight, dash, sprint, jump, impact, dodge, run_stop};
 	public enum NierSubStates {idle, fire}; 
 
 	public NierStates current_state = NierStates.normal; 
@@ -68,6 +68,9 @@ public class NierModular : MonoBehaviour {
 
 		if(inputs.Jump)
 			move.Jump(); 
+
+		if(inputs.Shoot)
+			fight.Shoot(); 
 	}
 
 	void RelativeToFight()
@@ -176,6 +179,7 @@ public class NierModular : MonoBehaviour {
 			{
 				fight.StopEnnemyTime(); 
 				current_state = NierStates.dodge; // Makes NierMove push the character transform
+				move.EnterDodge(); 
 			}
 			else
 			{
@@ -197,6 +201,14 @@ public class NierModular : MonoBehaviour {
 			{
 				move.EnterDrop(); 
 				current_state = NierStates.jump; 
+			}
+		}
+		else if(info == "RunStop")
+		{
+			if(state)
+			{
+				move.EnterStop(); 
+				current_state = NierStates.run_stop; 
 			}
 		}
 		else if(info == "Impact")

@@ -45,7 +45,11 @@ public class Globals : MonoBehaviour
 	}
 
 
-	
+	public static bool SmallerAngle(Vector3 v1, Vector3 v2, float limit)
+	{
+		float angle =  Vector3.Angle(v1, v2); 
+		return angle < limit; 
+	}
 
 
 	public static Transform [] CleanArray(Transform [] targets)
