@@ -23,6 +23,9 @@ public class PodFight : MonoBehaviour {
 
 	
 
+	public enum CamTest {normal, world}; 
+	public CamTest c_test; 
+
 	float shoot_cooldown; 
 	float changepos_cooldown; 
 
@@ -62,7 +65,14 @@ public class PodFight : MonoBehaviour {
 
 		transform.position = Vector3.Lerp(transform.position, TargetPosition, Time.deltaTime*LerpPositionSpeed); 
 
-		transform.LookAt(cam.ScreenToWorldPoint(new Vector3(cam.pixelWidth/2f, cam.pixelHeight/2f, cam.farClipPlane))); 
+		if (c_test == CamTest.normal)
+			transform.LookAt(cam.ScreenToWorldPoint(new Vector3(cam.pixelWidth/2f, cam.pixelHeight/2f, cam.farClipPlane))); 
+		else if(c_test == CamTest.world)
+		{
+			Vector3 screen_point = cam.WorldToScreenPoint(transform.position); 
+			transform.LookAt(cam.ScreenToWorldPoint(new Vector3(screen_point.x, screen_point.y, cam.farClipPlane))); 
+		}
+
 
 		shoot_cooldown = shoot_cooldown <= 0f ? shoot_cooldown : shoot_cooldown - Time.deltaTime; 
 		changepos_cooldown = changepos_cooldown <= 0f ? changepos_cooldown : changepos_cooldown - Time.deltaTime; 
