@@ -108,6 +108,20 @@ public class NierMove : MonoBehaviour {
 
 	void UpdateRotation()
 	{
+		// Vector3 current_axis, target_axis;  
+		// float current_angle, target_angle; 
+
+		// TargetRotation.ToAngleAxis(out target_angle, out target_axis); 
+		// transform.rotation.ToAngleAxis(out current_angle, out current_axis); 
+
+
+		// print("Expected axis " + target_axis.ToString()); 
+		// print("Current axis" + current_axis.ToString()); 
+
+
+		// if(target_axis != new Vector3(0f, 1f, 0f))
+		// 	Debug.Break(); 
+
 		transform.rotation = Quaternion.Lerp(transform.rotation, TargetRotation, RotationSpeed*Time.deltaTime); 
 	}
 
@@ -355,7 +369,8 @@ public class NierMove : MonoBehaviour {
 
 	public Quaternion ComputeAngleFromForward(Vector3 v)
 	{
-		Quaternion target = Quaternion.FromToRotation(transform.forward, v); 
+		float angle = Vector3.SignedAngle(transform.forward, v, Vector3.up); 
+		Quaternion target = Quaternion.AngleAxis(angle, Vector3.up); 
 		return target; 
 	}
 
