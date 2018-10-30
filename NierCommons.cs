@@ -3,6 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
+
+public class BadGuysUtils : MonoBehaviour
+{
+
+	public static Vector2 RandomDirection(float max_angle)
+	{
+		float radian_angle = (max_angle*3.14f)/(180f*2f); 
+		float random_angle = Random.Range(-radian_angle, radian_angle); 
+
+		return new Vector2(Mathf.Cos(random_angle), Mathf.Sin(random_angle)); 
+	}
+
+
+
+}
+
+
 public class Globals : MonoBehaviour
 {
 
@@ -63,8 +80,6 @@ public class Globals : MonoBehaviour
 
 		return cleaned.ToArray(); 
 	}
-
-
 }
 
 

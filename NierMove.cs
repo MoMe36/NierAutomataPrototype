@@ -276,6 +276,11 @@ public class NierMove : MonoBehaviour {
 		rb.AddForce(v); 
 	}
 
+	public void ChangeVelocity(Vector3 v)
+	{
+		rb.velocity = v; 
+	}
+
 	void SetDrag(string target)
 	{
 		rb.drag = target == "max" ? RigidbodyDrag.y : RigidbodyDrag.x; 

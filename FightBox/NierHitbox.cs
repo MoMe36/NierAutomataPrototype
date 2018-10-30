@@ -76,7 +76,7 @@ public class NierHitbox : MonoBehaviour {
 	{
 		if(PlayerReference != null)
 		{
-			PlayerReference.ImpactInform(impact_data);
+			PlayerReference.ImpactInform(impact_data, Vector3.ProjectOnPlane(direction, Vector3.up));
 		}
 		else
 		{

@@ -249,7 +249,7 @@ public class NierModular : MonoBehaviour {
 		fight.GetWeapon(state); 
 	}
 
-	public void ImpactInform(NierHitData data)
+	public void ImpactInform(NierHitData data, Vector3 direction)
 	{
 		bool dodge = DodgeInform(); 
 
@@ -259,7 +259,8 @@ public class NierModular : MonoBehaviour {
 		}
 		else
 		{
-			fight.Impacted(); 
+			fight.Impacted(); // triggers impact animation 
+			move.ChangeVelocity(direction*data.HitForce);  
 		}
 	}
 
